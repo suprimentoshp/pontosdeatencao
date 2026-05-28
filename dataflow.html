@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DataFlow - Ordens de Serviço</title>
+    <meta name="theme-color" content="#0f766e">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="dashboard-shell">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow">DataFlow</p>
+          <h1>Indicadores</h1>
+        </div>
+        <div class="dashboard-actions">
+          <a class="secondary-link" href="admin.html">Home</a>
+        </div>
+      </header>
+
+      <section class="filters-panel" aria-label="Filtros">
+        <label>
+          Buscar
+          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, responsável">
+        </label>
+        <label>
+          Status
+          <select id="statusFilter">
+            <option value="">Todos</option>
+            <option value="Lista">Lista</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Concluída">Concluída</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </label>
+        <label>
+          Urgência
+          <select id="urgencyFilter">
+            <option value="">Todas</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+            <option value="Crítica">Crítica</option>
+          </select>
+        </label>
+        <label>
+          De
+          <input id="startDateFilter" type="date">
+        </label>
+        <label>
+          Até
+          <input id="endDateFilter" type="date">
+        </label>
+        <button class="secondary" type="button" id="clearFiltersButton">Limpar filtros</button>
+      </section>
+
+      <section class="kpi-grid" aria-label="Indicadores">
+        <article class="kpi-card">
+          <span>Total</span>
+          <strong id="totalKpi">0</strong>
+        </article>
+        <article class="kpi-card">
+          <span>Abertas</span>
+          <strong id="openKpi">0</strong>
+        </article>
+        <article class="kpi-card">
+          <span>Críticas/altas</span>
+          <strong id="highKpi">0</strong>
+        </article>
+        <article class="kpi-card">
+          <span>Concluídas</span>
+          <strong id="doneKpi">0</strong>
+        </article>
+      </section>
+
+      <section class="charts-grid" aria-label="Gráficos">
+        <article class="chart-panel">
+          <h2>Por status</h2>
+          <div id="statusChart" class="bar-chart"></div>
+        </article>
+        <article class="chart-panel">
+          <h2>Por urgência</h2>
+          <div id="urgencyChart" class="bar-chart"></div>
+        </article>
+        <article class="chart-panel">
+          <h2>Por destino</h2>
+          <div id="recipientChart" class="bar-chart"></div>
+        </article>
+      </section>
+
+      <section class="line-chart-panel" aria-label="Registros por destino no período">
+        <div class="chart-heading">
+          <h2>Registros por destino</h2>
+          <span id="trendPeriod">Mês vigente</span>
+        </div>
+        <div id="recipientTrendChart" class="line-chart"></div>
+      </section>
+
+      <section class="line-chart-panel" aria-label="Emitidos contra finalizados no período">
+        <div class="chart-heading">
+          <h2>Emitidos x finalizados</h2>
+          <span id="completionPeriod">Mês vigente</span>
+        </div>
+        <div id="completionTrendChart" class="line-chart"></div>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="data-store.js"></script>
+    <script src="dataflow.js"></script>
+    <script src="pwa.js"></script>
+  </body>
+</html>

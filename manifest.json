@@ -1,0 +1,9 @@
+{
+  "name": "Pontos de atenção e ocorrências",
+  "short_name": "Ocorrências",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#edf2f6",
+  "theme_color": "#0f766e",
+  "icons": []
+}

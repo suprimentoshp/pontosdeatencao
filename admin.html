@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel Administrativo - Ordens de Serviço</title>
+    <meta name="theme-color" content="#0f766e">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="dashboard-shell">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow">Administração</p>
+          <h1>Ordens recebidas</h1>
+        </div>
+        <div class="dashboard-actions">
+          <a class="secondary-link" href="index.html">Nova ordem</a>
+          <a class="secondary-link" href="dataflow.html">DataFlow</a>
+          <button class="secondary" type="button" id="exportButton">Exportar CSV</button>
+        </div>
+      </header>
+
+      <section class="filters-panel" aria-label="Filtros">
+        <label>
+          Buscar
+          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, responsável">
+        </label>
+        <label>
+          Status
+          <select id="statusFilter">
+            <option value="">Todos</option>
+            <option value="Lista">Lista</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Concluída">Concluída</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </label>
+        <label>
+          Urgência
+          <select id="urgencyFilter">
+            <option value="">Todas</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+            <option value="Crítica">Crítica</option>
+          </select>
+        </label>
+        <label>
+          De
+          <input id="startDateFilter" type="date">
+        </label>
+        <label>
+          Até
+          <input id="endDateFilter" type="date">
+        </label>
+        <button class="secondary" type="button" id="clearFiltersButton">Limpar filtros</button>
+      </section>
+
+      <section class="admin-panel dashboard-list" aria-labelledby="orders-title">
+        <div class="admin-heading">
+          <div>
+            <p class="eyebrow">Lista</p>
+            <h2 id="orders-title">Ordens filtradas</h2>
+          </div>
+          <strong id="filteredCount">0 registros</strong>
+        </div>
+        <div class="orders-admin-layout">
+          <div>
+            <div id="emptyState" class="empty-state">Nenhuma ordem encontrada.</div>
+            <div id="ordersList" class="orders-list compact-list"></div>
+          </div>
+          <aside id="orderDetail" class="order-detail" aria-live="polite">
+            <div class="empty-state">Selecione uma ordem para ver os detalhes.</div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="data-store.js"></script>
+    <script src="admin.js"></script>
+    <script src="pwa.js"></script>
+  </body>
+</html>
