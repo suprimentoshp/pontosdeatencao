@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: pontosdeatencao
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    disk:
+      name: pontosdeatencao-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

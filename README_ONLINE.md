@@ -1,6 +1,55 @@
 # Publicação online
 
-Este app está pronto para publicar como site estático, por exemplo no GitHub Pages.
+Este app pode rodar como app Node/Express no Render, com histórico compartilhado entre todos os equipamentos.
+
+## Render com histórico compartilhado
+
+1. Envie este projeto para o GitHub.
+2. No Render, crie um `New Web Service`.
+3. Conecte o repositório.
+4. Use:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+5. Configure um Persistent Disk:
+   - Mount Path: `/opt/render/project/src/data`
+   - Tamanho: `1 GB`
+6. Publique o serviço.
+
+O app ficará disponível em uma URL parecida com:
+
+```text
+https://pontosdeatencao.onrender.com
+```
+
+Todos devem acessar por essa URL online. Assim as ordens ficam salvas em:
+
+```text
+data/ordens.json
+```
+
+Se o Persistent Disk não estiver configurado, o Render pode apagar o histórico quando reiniciar o serviço.
+
+## API usada pelo app
+
+O navegador carrega o histórico em:
+
+```text
+GET /api/app-data
+```
+
+E salva o histórico completo em:
+
+```text
+PUT /api/app-data
+```
+
+Formato:
+
+```json
+{ "orders": [] }
+```
+
+## GitHub Pages
 
 ## GitHub Pages
 
