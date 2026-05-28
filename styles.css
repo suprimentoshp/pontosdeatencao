@@ -69,9 +69,9 @@ a {
 .home-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 250px;
-  gap: 56px;
+  gap: 38px;
   align-items: center;
-  padding: 30px 20px 30px 48px;
+  padding: 22px 22px 30px;
   background: linear-gradient(135deg, #ffffff 0%, #eaf8f5 100%);
   border-bottom: 1px solid var(--line);
 }
@@ -83,8 +83,8 @@ a {
 .home-hero h1 {
   margin: 0;
   max-width: none;
-  font-size: clamp(1.9rem, 3.7vw, 2.65rem);
-  line-height: 1.08;
+  font-size: clamp(2rem, 3.75vw, 2.65rem);
+  line-height: 1.06;
 }
 
 .home-subtitle {
@@ -138,7 +138,7 @@ a {
 }
 
 .protocol-admin-link {
-  width: calc(100% - 30px);
+  width: 205px;
   min-height: 44px;
   margin: 0 auto;
   padding: 0 10px;
