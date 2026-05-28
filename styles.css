@@ -68,10 +68,10 @@ a {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
-  gap: 38px;
+  grid-template-columns: minmax(0, 1fr) 252px;
+  gap: 72px;
   align-items: center;
-  padding: 22px 22px 30px;
+  padding: 22px 20px 30px 44px;
   background: linear-gradient(135deg, #ffffff 0%, #eaf8f5 100%);
   border-bottom: 1px solid var(--line);
 }
@@ -83,13 +83,13 @@ a {
 .home-hero h1 {
   margin: 0;
   max-width: none;
-  font-size: clamp(2rem, 3.75vw, 2.65rem);
+  font-size: clamp(2.1rem, 3.9vw, 2.8rem);
   line-height: 1.06;
 }
 
 .home-subtitle {
   max-width: 720px;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   color: var(--muted);
   line-height: 1.45;
 }
@@ -138,7 +138,7 @@ a {
 }
 
 .protocol-admin-link {
-  width: 205px;
+  width: 208px;
   min-height: 44px;
   margin: 0 auto;
   padding: 0 10px;
