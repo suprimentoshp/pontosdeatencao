@@ -97,9 +97,8 @@ a {
 .home-protocol {
   position: relative;
   grid-column: 2;
-  grid-template-columns: 78px minmax(0, 1fr);
   display: grid;
-  gap: 0;
+  gap: 12px;
   width: 100%;
   padding: 0;
   border: 0;
@@ -108,18 +107,15 @@ a {
 }
 
 .home-protocol strong:first-of-type {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-height: 48px;
+  margin: 0;
+  padding: 0 8px;
   position: relative;
   z-index: 1;
-}
-
-.home-protocol strong:first-of-type {
-  grid-column: 1;
-  background: transparent;
-  padding: 0 8px;
 }
 
 .home-protocol::before {
@@ -135,10 +131,10 @@ a {
 }
 
 .protocol-admin-link {
-  grid-column: 2;
-  width: 100%;
-  min-height: 48px;
-  margin: 0;
+  grid-column: 1;
+  width: 205px;
+  min-height: 44px;
+  margin: 0 auto;
   padding: 0 10px;
   font-size: 0.86rem;
   position: relative;
