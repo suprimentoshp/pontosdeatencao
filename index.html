@@ -19,13 +19,12 @@
           </div>
           <div class="home-protocol" aria-label="Protocolo gerado">
             <span>Protocolo</span>
-            <strong id="protocolNumber">OS-000000</strong>
+            <strong id="protocolNumber">OS-1</strong>
+            <a class="admin-link protocol-admin-link" href="admin.html" target="_blank" rel="noopener">Abrir painel administrativo</a>
           </div>
         </header>
 
         <div class="home-body">
-          <a class="admin-link" href="admin.html" target="_blank" rel="noopener">Abrir painel administrativo</a>
-
           <div class="home-meta-grid">
             <div class="home-meta-card">
               <span>Emissão automática</span>
@@ -43,15 +42,15 @@
               <div class="home-grid">
                 <label>
                   <span>Quem está sendo notificado</span>
-                  <input id="recipient" name="recipient" type="text" placeholder="Ex.: Manutenção, Governança, Recepção" required>
+                  <input id="recipient" name="recipient" type="text" required>
                 </label>
                 <label>
                   <span>Quem notificou</span>
-                  <input id="issuer" name="issuer" type="text" placeholder="Nome do responsável" required>
+                  <input id="issuer" name="issuer" type="text" required>
                 </label>
                 <label>
                   <span>Nº do apartamento ou local</span>
-                  <input id="room" name="room" type="text" placeholder="Ex.: Apto 204, Corredor, Cozinha" required>
+                  <input id="room" name="room" type="text" required>
                 </label>
                 <label>
                   <span>Grau de urgência</span>
@@ -68,7 +67,7 @@
             <section class="home-section">
               <label>
                 <span>Descrição do ocorrido</span>
-                <textarea id="description" name="description" rows="6" placeholder="Descreva o problema, local exato e observações importantes." required></textarea>
+                <textarea id="description" name="description" rows="6" placeholder="Descreva o ocorrido, local exato e outras informações pertinentes." required></textarea>
               </label>
             </section>
 
@@ -83,6 +82,7 @@
                 </div>
                 <div class="camera-actions">
                   <button class="secondary" type="button" id="openCameraButton">Abrir câmera</button>
+                  <button class="secondary" type="button" id="uploadPhotoButton">Carregar foto do dispositivo</button>
                   <button type="button" id="captureButton" hidden>Capturar foto</button>
                   <button class="secondary" type="button" id="closeCameraButton" hidden>Fechar câmera</button>
                   <button class="danger" type="button" id="removePhotoButton" hidden>Remover</button>

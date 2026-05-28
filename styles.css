@@ -107,6 +107,14 @@ a {
   text-align: left;
 }
 
+.protocol-admin-link {
+  width: 100%;
+  min-height: 34px;
+  margin: 10px 0 0;
+  padding: 0 10px;
+  font-size: 0.82rem;
+}
+
 .home-protocol span,
 .home-meta-card span,
 .home-form label span {

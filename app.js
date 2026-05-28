@@ -8,6 +8,7 @@ const photoBox = document.querySelector(".photo-box");
 const cameraView = document.querySelector("#cameraView");
 const cameraCanvas = document.querySelector("#cameraCanvas");
 const openCameraButton = document.querySelector("#openCameraButton");
+const uploadPhotoButton = document.querySelector("#uploadPhotoButton");
 const captureButton = document.querySelector("#captureButton");
 const closeCameraButton = document.querySelector("#closeCameraButton");
 const removePhotoButton = document.querySelector("#removePhotoButton");
@@ -20,11 +21,13 @@ let currentIssuedAt = "";
 let currentPhoto = "";
 let cameraStream = null;
 
-function createProtocol() {
-  const now = new Date();
-  const datePart = now.toISOString().slice(2, 10).replaceAll("-", "");
-  const timePart = String(now.getHours()).padStart(2, "0") + String(now.getMinutes()).padStart(2, "0") + String(now.getSeconds()).padStart(2, "0");
-  return `OS-${datePart}-${timePart}`;
+async function createProtocol() {
+  const orders = await OrderStore.list();
+  const maxNumber = orders.reduce((max, order) => {
+    const match = String(order.protocol || "").match(/^OS-(\d+)$/);
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+  return `OS-${maxNumber + 1}`;
 }
 
 function formatDateTime(value) {
@@ -135,8 +138,8 @@ function collectOrder() {
   };
 }
 
-function startNewOrder() {
-  currentProtocol = createProtocol();
+async function startNewOrder() {
+  currentProtocol = await createProtocol();
   currentIssuedAt = new Date().toISOString();
   protocolNumber.textContent = currentProtocol;
   issuedAtLabel.textContent = formatDateTime(currentIssuedAt);
@@ -155,6 +158,7 @@ async function submitOrder(event) {
 form.addEventListener("submit", submitOrder);
 photoInput.addEventListener("change", handlePhotoChange);
 openCameraButton.addEventListener("click", openCamera);
+uploadPhotoButton.addEventListener("click", () => photoInput.click());
 captureButton.addEventListener("click", capturePhoto);
 closeCameraButton.addEventListener("click", closeCamera);
 removePhotoButton.addEventListener("click", resetPhoto);
