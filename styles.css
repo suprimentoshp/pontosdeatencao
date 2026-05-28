@@ -97,8 +97,9 @@ a {
 .home-protocol {
   position: relative;
   grid-column: 2;
+  grid-template-columns: 78px minmax(0, 1fr);
   display: grid;
-  gap: 12px;
+  gap: 0;
   width: 100%;
   padding: 0;
   border: 0;
@@ -106,7 +107,6 @@ a {
   text-align: center;
 }
 
-.home-protocol span:first-child,
 .home-protocol strong:first-of-type {
   display: inline-flex;
   align-items: center;
@@ -116,12 +116,9 @@ a {
   z-index: 1;
 }
 
-.home-protocol span:first-child {
-  margin-right: 8px;
-}
-
 .home-protocol strong:first-of-type {
-  background: #eaf8f5;
+  grid-column: 1;
+  background: transparent;
   padding: 0 8px;
 }
 
@@ -138,11 +135,14 @@ a {
 }
 
 .protocol-admin-link {
-  width: 208px;
-  min-height: 44px;
-  margin: 0 auto;
+  grid-column: 2;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
   padding: 0 10px;
   font-size: 0.86rem;
+  position: relative;
+  z-index: 1;
 }
 
 .home-protocol span,
