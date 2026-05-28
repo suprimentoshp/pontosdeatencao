@@ -214,7 +214,7 @@ a {
 
 .segmented-control {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   padding: 5px;
   border: 1px solid var(--line);
@@ -570,6 +570,10 @@ button.danger:hover {
 
 .urgency.baixa {
   background: var(--ok);
+}
+
+.urgency.otimo {
+  background: #0f766e;
 }
 
 .urgency.media {

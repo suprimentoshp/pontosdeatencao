@@ -6,7 +6,7 @@
     <title>Pontos de atenção e ocorrências</title>
     <meta name="theme-color" content="#0f766e">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=13">
+    <link rel="stylesheet" href="styles.css?v=14">
   </head>
   <body class="modern-home">
     <main class="home-shell">
@@ -50,9 +50,10 @@
                   <input id="room" name="room" type="text" required>
                 </label>
                 <label>
-                  <span>Grau de urgência</span>
+                  <span>Grau de impacto</span>
                   <input id="urgency" name="urgency" type="hidden" value="Média" required>
-                  <div class="segmented-control" role="group" aria-label="Grau de urgência">
+                  <div class="segmented-control" role="group" aria-label="Grau de impacto">
+                    <button type="button" data-urgency="Ótimo">Ótimo</button>
                     <button type="button" data-urgency="Baixa">Baixa</button>
                     <button class="active" type="button" data-urgency="Média">Média</button>
                     <button type="button" data-urgency="Alta">Alta</button>

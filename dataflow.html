@@ -6,7 +6,7 @@
     <title>DataFlow - Ordens de Serviço</title>
     <meta name="theme-color" content="#0f766e">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=13">
+    <link rel="stylesheet" href="styles.css?v=14">
   </head>
   <body>
     <main class="dashboard-shell">
@@ -36,9 +36,10 @@
           </select>
         </label>
         <label>
-          Urgência
+          Grau de impacto
           <select id="urgencyFilter">
             <option value="">Todas</option>
+            <option value="Ótimo">Ótimo</option>
             <option value="Baixa">Baixa</option>
             <option value="Média">Média</option>
             <option value="Alta">Alta</option>
@@ -81,7 +82,7 @@
           <div id="statusChart" class="bar-chart"></div>
         </article>
         <article class="chart-panel">
-          <h2>Por urgência</h2>
+          <h2>Por impacto</h2>
           <div id="urgencyChart" class="bar-chart"></div>
         </article>
         <article class="chart-panel">
