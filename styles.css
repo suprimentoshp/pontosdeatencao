@@ -68,10 +68,10 @@ a {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 18px;
-  align-items: start;
-  padding: 22px;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 28px;
+  align-items: center;
+  padding: 24px 26px;
   background: linear-gradient(135deg, #ffffff 0%, #eaf8f5 100%);
   border-bottom: 1px solid var(--line);
 }
@@ -83,32 +83,35 @@ a {
 .home-hero h1 {
   margin: 0;
   max-width: none;
-  font-size: clamp(1.7rem, 4vw, 2.55rem);
-  line-height: 1.02;
+  font-size: clamp(1.9rem, 3.7vw, 2.65rem);
+  line-height: 1.08;
 }
 
 .home-subtitle {
   max-width: 720px;
-  margin: 18px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 .home-protocol {
   position: relative;
   grid-column: 2;
-  width: 240px;
+  display: grid;
+  gap: 12px;
+  width: 100%;
   padding: 0;
   border: 0;
   background: transparent;
-  text-align: left;
+  text-align: center;
 }
 
 .home-protocol span:first-child,
 .home-protocol strong:first-of-type {
   display: inline-flex;
   align-items: center;
-  min-height: 46px;
+  justify-content: center;
+  min-height: 48px;
   position: relative;
   z-index: 1;
 }
@@ -121,8 +124,9 @@ a {
   content: "";
   display: block;
   position: absolute;
-  width: 240px;
-  height: 46px;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: 48px;
   border: 1px solid #acd5cf;
   border-radius: 14px;
   background: #fff;
@@ -130,10 +134,10 @@ a {
 
 .protocol-admin-link {
   width: 100%;
-  min-height: 34px;
-  margin: 20px 0 0;
+  min-height: 44px;
+  margin: 0;
   padding: 0 10px;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
 }
 
 .home-protocol span,
