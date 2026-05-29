@@ -86,7 +86,16 @@ async function listOrders() {
   if (!canUseServerApi()) return localList();
 
   try {
-    return await serverList();
+    const serverOrders = await serverList();
+    const localOrders = localList();
+
+    if (!serverOrders.length && localOrders.length) {
+      await serverSave(localOrders);
+      return localOrders;
+    }
+
+    localSave(serverOrders);
+    return serverOrders;
   } catch (error) {
     console.warn(error);
     return localList();
