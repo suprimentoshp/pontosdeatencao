@@ -5,12 +5,6 @@ const exportButton = document.querySelector("#exportButton");
 const logoutButton = document.querySelector("#logoutButton");
 const clearFiltersButton = document.querySelector("#clearFiltersButton");
 const filteredCount = document.querySelector("#filteredCount");
-const loginShell = document.querySelector("#loginShell");
-const adminApp = document.querySelector("#adminApp");
-const loginForm = document.querySelector("#loginForm");
-const loginUser = document.querySelector("#loginUser");
-const loginPassword = document.querySelector("#loginPassword");
-const loginMessage = document.querySelector("#loginMessage");
 const loggedUserLabel = document.querySelector("#loggedUserLabel");
 const filters = {
   search: document.querySelector("#searchFilter"),
@@ -24,39 +18,28 @@ let selectedOrderId = "";
 let currentUser = null;
 
 const USERS = {
-  daniel: { name: "Daniel", password: "123456", canManage: false },
-  felipe: { name: "Felipe", password: "Brasil@2024", canManage: true },
-  dan: { name: "Dan", password: "123456", canManage: false },
-  visitante: { name: "Visitante", password: "123456", canManage: false }
+  Daniel: { name: "Daniel", canManage: false },
+  Felipe: { name: "Felipe", canManage: true },
+  Dan: { name: "Dan", canManage: false },
+  Visitante: { name: "Visitante", canManage: false }
 };
 
 function canManageOrders() {
   return Boolean(currentUser?.canManage);
 }
 
-function saveSession(user) {
-  sessionStorage.setItem("admin-user", user.name);
-}
-
 function readSession() {
   const name = sessionStorage.getItem("admin-user");
   if (!name) return null;
-  return Object.values(USERS).find((user) => user.name === name) || null;
+  return USERS[name] || null;
 }
 
 function setAuthenticated(user) {
   currentUser = user;
-  loginShell.hidden = true;
-  adminApp.hidden = false;
   exportButton.hidden = !canManageOrders();
   loggedUserLabel.textContent = canManageOrders()
     ? `Usuário: ${currentUser.name} - acesso completo`
     : `Usuário: ${currentUser.name} - somente visualização`;
-}
-
-function authenticate(name, password) {
-  const user = USERS[normalizeText(name)];
-  return user?.password === password ? user : null;
 }
 
 function formatDateTime(value) {
@@ -307,26 +290,7 @@ exportButton.addEventListener("click", exportCsv);
 logoutButton.addEventListener("click", () => {
   sessionStorage.removeItem("admin-user");
   currentUser = null;
-  adminApp.hidden = true;
-  loginShell.hidden = false;
-  loginPassword.value = "";
-  loginUser.focus();
-});
-
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const user = authenticate(loginUser.value, loginPassword.value);
-  if (!user) {
-    loginMessage.textContent = "Usuário ou senha inválidos.";
-    loginPassword.value = "";
-    loginPassword.focus();
-    return;
-  }
-
-  loginMessage.textContent = "";
-  saveSession(user);
-  setAuthenticated(user);
-  renderDashboard();
+  window.location.href = "login.html";
 });
 window.addEventListener("storage", renderDashboard);
 
@@ -335,7 +299,5 @@ if (savedUser) {
   setAuthenticated(savedUser);
   renderDashboard();
 } else {
-  loginShell.hidden = false;
-  adminApp.hidden = true;
-  loginUser.focus();
+  window.location.replace("login.html");
 }

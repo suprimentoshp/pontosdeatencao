@@ -6,27 +6,10 @@
     <title>Painel Administrativo - Ordens de Serviço</title>
     <meta name="theme-color" content="#0f766e">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=15">
+    <link rel="stylesheet" href="styles.css?v=16">
   </head>
   <body>
-    <main id="loginShell" class="login-shell">
-      <form id="loginForm" class="login-card">
-        <p class="eyebrow">Acesso restrito</p>
-        <h1>Painel administrativo</h1>
-        <label>
-          Usuário
-          <input id="loginUser" type="text" autocomplete="username" required>
-        </label>
-        <label>
-          Senha
-          <input id="loginPassword" type="password" autocomplete="current-password" required>
-        </label>
-        <p id="loginMessage" class="login-message" role="alert"></p>
-        <button type="submit">Entrar</button>
-      </form>
-    </main>
-
-    <main id="adminApp" class="dashboard-shell" hidden>
+    <main class="dashboard-shell">
       <header class="dashboard-header">
         <div>
           <p class="eyebrow">Administração</p>

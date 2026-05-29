@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acesso administrativo - Pontos de atenção</title>
+    <meta name="theme-color" content="#0f766e">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css?v=16">
+  </head>
+  <body>
+    <main class="login-shell">
+      <form id="loginForm" class="login-card">
+        <p class="eyebrow">Acesso restrito</p>
+        <h1>Painel administrativo</h1>
+        <label>
+          Usuário
+          <input id="loginUser" type="text" autocomplete="username" required autofocus>
+        </label>
+        <label>
+          Senha
+          <input id="loginPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <p id="loginMessage" class="login-message" role="alert"></p>
+        <button type="submit">Entrar</button>
+      </form>
+    </main>
+
+    <script src="login.js"></script>
+    <script src="pwa.js"></script>
+  </body>
+</html>

@@ -1,12 +1,14 @@
-const CACHE_NAME = "ocorrencias-v9";
+const CACHE_NAME = "ocorrencias-v10";
 const ASSETS = [
   "./",
   "./index.html",
+  "./login.html",
   "./admin.html",
   "./dataflow.html",
   "./styles.css",
   "./config.js",
   "./data-store.js",
+  "./login.js",
   "./app.js",
   "./admin.js",
   "./dataflow.js",
