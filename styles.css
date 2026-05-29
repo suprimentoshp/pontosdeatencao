@@ -291,6 +291,45 @@ a {
   margin: 8px auto 24px;
 }
 
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 30rem),
+    linear-gradient(180deg, #f8fbfd 0%, #edf2f6 100%);
+}
+
+.login-card {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 420px);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.login-card h1 {
+  font-size: 1.8rem;
+}
+
+.login-message {
+  min-height: 20px;
+  margin: 0;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.session-label {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .dashboard-header,
 .filters-panel {
   position: sticky;
@@ -1137,6 +1176,14 @@ dd {
   padding: 12px 14px;
   border-bottom: 1px solid var(--line);
   grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.permission-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 .order-card {

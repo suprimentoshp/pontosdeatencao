@@ -22,12 +22,7 @@ let currentPhoto = "";
 let cameraStream = null;
 
 async function createProtocol() {
-  const orders = await OrderStore.list();
-  const maxNumber = orders.reduce((max, order) => {
-    const match = String(order.protocol || "").match(/^OS-(\d+)$/);
-    return match ? Math.max(max, Number(match[1])) : max;
-  }, 0);
-  return `OS-${maxNumber + 1}`;
+  return OrderStore.nextProtocol();
 }
 
 function formatDateTime(value) {
@@ -150,8 +145,8 @@ async function submitOrder(event) {
   event.preventDefault();
   if (!form.reportValidity()) return;
 
-  await OrderStore.create(collectOrder());
-  alert("Ordem registrada. Ela já está disponível no painel administrativo.");
+  const created = await OrderStore.create(collectOrder());
+  alert(`Ordem ${created.protocol || currentProtocol} registrada. Ela já está disponível no painel administrativo.`);
   form.reset();
 }
 

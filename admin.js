@@ -2,8 +2,16 @@ const ordersList = document.querySelector("#ordersList");
 const orderDetail = document.querySelector("#orderDetail");
 const emptyState = document.querySelector("#emptyState");
 const exportButton = document.querySelector("#exportButton");
+const logoutButton = document.querySelector("#logoutButton");
 const clearFiltersButton = document.querySelector("#clearFiltersButton");
 const filteredCount = document.querySelector("#filteredCount");
+const loginShell = document.querySelector("#loginShell");
+const adminApp = document.querySelector("#adminApp");
+const loginForm = document.querySelector("#loginForm");
+const loginUser = document.querySelector("#loginUser");
+const loginPassword = document.querySelector("#loginPassword");
+const loginMessage = document.querySelector("#loginMessage");
+const loggedUserLabel = document.querySelector("#loggedUserLabel");
 const filters = {
   search: document.querySelector("#searchFilter"),
   status: document.querySelector("#statusFilter"),
@@ -13,6 +21,43 @@ const filters = {
 };
 
 let selectedOrderId = "";
+let currentUser = null;
+
+const USERS = {
+  daniel: { name: "Daniel", password: "123456", canManage: false },
+  felipe: { name: "Felipe", password: "Brasil@2024", canManage: true },
+  dan: { name: "Dan", password: "123456", canManage: false },
+  visitante: { name: "Visitante", password: "123456", canManage: false }
+};
+
+function canManageOrders() {
+  return Boolean(currentUser?.canManage);
+}
+
+function saveSession(user) {
+  sessionStorage.setItem("admin-user", user.name);
+}
+
+function readSession() {
+  const name = sessionStorage.getItem("admin-user");
+  if (!name) return null;
+  return Object.values(USERS).find((user) => user.name === name) || null;
+}
+
+function setAuthenticated(user) {
+  currentUser = user;
+  loginShell.hidden = true;
+  adminApp.hidden = false;
+  exportButton.hidden = !canManageOrders();
+  loggedUserLabel.textContent = canManageOrders()
+    ? `Usuário: ${currentUser.name} - acesso completo`
+    : `Usuário: ${currentUser.name} - somente visualização`;
+}
+
+function authenticate(name, password) {
+  const user = USERS[normalizeText(name)];
+  return user?.password === password ? user : null;
+}
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -107,6 +152,11 @@ function renderSelectedOrder(order) {
     return;
   }
 
+  const disabled = canManageOrders() ? "" : " disabled";
+  const permissionNote = canManageOrders()
+    ? ""
+    : `<p class="permission-note">Somente o usuário Felipe pode alterar status, excluir ordens e exportar CSV.</p>`;
+
   orderDetail.innerHTML = `
     <article class="order-detail-card">
       <header>
@@ -130,14 +180,15 @@ function renderSelectedOrder(order) {
       <div class="order-actions detail-actions">
         <label>
           Status
-          <select data-action="status" data-id="${order.id}">
+          <select data-action="status" data-id="${order.id}"${disabled}>
             <option value="Nova"${order.status === "Nova" ? " selected" : ""}>Nova</option>
             <option value="Em andamento"${order.status === "Em andamento" ? " selected" : ""}>Em andamento</option>
             <option value="Concluída"${order.status === "Concluída" ? " selected" : ""}>Concluída</option>
             <option value="Cancelada"${order.status === "Cancelada" ? " selected" : ""}>Cancelada</option>
           </select>
         </label>
-        <button class="danger" type="button" data-action="delete" data-id="${order.id}">Excluir</button>
+        <button class="danger" type="button" data-action="delete" data-id="${order.id}"${disabled}>Excluir</button>
+        ${permissionNote}
       </div>
       ${order.photo ? `<img class="detail-photo" src="${order.photo}" alt="Foto da ${escapeHtml(order.protocol)}">` : `<div class="empty-state">Sem foto anexada.</div>`}
     </article>
@@ -166,6 +217,11 @@ async function handleOrderAction(event) {
   }
 
   if (action === "status" && event.type === "change") {
+    if (!canManageOrders()) {
+      renderDashboard();
+      return;
+    }
+
     if (target.value === "Cancelada" && order.status !== "Cancelada") {
       const reason = window.prompt(`Informe o motivo do cancelamento da ordem ${order.protocol}:`);
 
@@ -188,7 +244,9 @@ async function handleOrderAction(event) {
     return;
   }
 
-  if (action === "delete" && event.type === "click" && window.confirm(`Excluir a ordem ${order.protocol}?`)) {
+  if (action === "delete" && event.type === "click") {
+    if (!canManageOrders()) return;
+    if (!window.confirm(`Excluir a ordem ${order.protocol}?`)) return;
     if (selectedOrderId === id) selectedOrderId = "";
     await OrderStore.remove(id);
     await renderDashboard();
@@ -196,6 +254,11 @@ async function handleOrderAction(event) {
 }
 
 async function exportCsv() {
+  if (!canManageOrders()) {
+    alert("Somente o usuário Felipe pode exportar CSV.");
+    return;
+  }
+
   const orders = await getFilteredOrders();
   if (!orders.length) return;
 
@@ -241,6 +304,38 @@ ordersList.addEventListener("click", handleOrderAction);
 orderDetail.addEventListener("change", handleOrderAction);
 orderDetail.addEventListener("click", handleOrderAction);
 exportButton.addEventListener("click", exportCsv);
+logoutButton.addEventListener("click", () => {
+  sessionStorage.removeItem("admin-user");
+  currentUser = null;
+  adminApp.hidden = true;
+  loginShell.hidden = false;
+  loginPassword.value = "";
+  loginUser.focus();
+});
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const user = authenticate(loginUser.value, loginPassword.value);
+  if (!user) {
+    loginMessage.textContent = "Usuário ou senha inválidos.";
+    loginPassword.value = "";
+    loginPassword.focus();
+    return;
+  }
+
+  loginMessage.textContent = "";
+  saveSession(user);
+  setAuthenticated(user);
+  renderDashboard();
+});
 window.addEventListener("storage", renderDashboard);
 
-renderDashboard();
+const savedUser = readSession();
+if (savedUser) {
+  setAuthenticated(savedUser);
+  renderDashboard();
+} else {
+  loginShell.hidden = false;
+  adminApp.hidden = true;
+  loginUser.focus();
+}
