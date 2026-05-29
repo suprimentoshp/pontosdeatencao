@@ -6,7 +6,7 @@
     <title>Painel Administrativo - Ordens de Serviço</title>
     <meta name="theme-color" content="#0f766e">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=17">
+    <link rel="stylesheet" href="styles.css?v=18">
   </head>
   <body>
     <main class="dashboard-shell">
@@ -24,10 +24,14 @@
         </div>
       </header>
 
-      <section class="filters-panel" aria-label="Filtros">
+      <section class="filters-panel admin-filters" aria-label="Filtros">
         <label>
           Buscar
-          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, responsável">
+          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, quem notificou">
+        </label>
+        <label>
+          Nome
+          <input id="nameFilter" type="search" placeholder="Quem está sendo notificado">
         </label>
         <label>
           Status

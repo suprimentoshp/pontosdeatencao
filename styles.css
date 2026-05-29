@@ -1178,6 +1178,10 @@ dd {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.filters-panel.admin-filters {
+  grid-template-columns: minmax(200px, 1.35fr) minmax(160px, 1fr) repeat(4, minmax(130px, 0.9fr)) auto;
+}
+
 .permission-note {
   grid-column: 1 / -1;
   margin: 0;

@@ -6,7 +6,7 @@
     <title>DataFlow - Ordens de Serviço</title>
     <meta name="theme-color" content="#0f766e">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=17">
+    <link rel="stylesheet" href="styles.css?v=18">
   </head>
   <body>
     <main class="dashboard-shell">
@@ -23,7 +23,7 @@
       <section class="filters-panel" aria-label="Filtros">
         <label>
           Buscar
-          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, responsável">
+          <input id="searchFilter" type="search" placeholder="Protocolo, local, descrição, nome">
         </label>
         <label>
           Status
@@ -86,14 +86,14 @@
           <div id="urgencyChart" class="bar-chart"></div>
         </article>
         <article class="chart-panel">
-          <h2>Por destino</h2>
+          <h2>Por notificado</h2>
           <div id="recipientChart" class="bar-chart"></div>
         </article>
       </section>
 
-      <section class="line-chart-panel" aria-label="Registros por destino no período">
+      <section class="line-chart-panel" aria-label="Registros por notificado no período">
         <div class="chart-heading">
-          <h2>Registros por destino</h2>
+          <h2>Registros por notificado</h2>
           <span id="trendPeriod">Mês vigente</span>
         </div>
         <div id="recipientTrendChart" class="line-chart"></div>

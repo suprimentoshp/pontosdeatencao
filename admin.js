@@ -8,6 +8,7 @@ const filteredCount = document.querySelector("#filteredCount");
 const loggedUserLabel = document.querySelector("#loggedUserLabel");
 const filters = {
   search: document.querySelector("#searchFilter"),
+  name: document.querySelector("#nameFilter"),
   status: document.querySelector("#statusFilter"),
   urgency: document.querySelector("#urgencyFilter"),
   startDate: document.querySelector("#startDateFilter"),
@@ -76,6 +77,7 @@ function escapeHtml(value) {
 
 async function getFilteredOrders() {
   const search = normalizeText(filters.search.value);
+  const name = normalizeText(filters.name.value);
   const status = filters.status.value;
   const urgency = filters.urgency.value;
   const start = filters.startDate.value ? new Date(`${filters.startDate.value}T00:00:00`) : null;
@@ -84,11 +86,13 @@ async function getFilteredOrders() {
   const orders = await OrderStore.list();
   return orders.filter((order) => {
     const issuedAt = new Date(order.issuedAt);
-    const text = normalizeText(`${order.protocol} ${order.room} ${order.description} ${order.recipient} ${order.issuer}`);
+    const text = normalizeText(`${order.protocol} ${order.room} ${order.description} ${order.issuer}`);
+    const notifiedName = normalizeText(order.recipient);
     const matchesStatus = !status ||
       (status === "Lista" ? order.status !== "Cancelada" && order.status !== "Concluída" : order.status === status);
 
     return (!search || text.includes(search)) &&
+      (!name || notifiedName.includes(name)) &&
       matchesStatus &&
       (!urgency || order.urgency === urgency) &&
       (!start || issuedAt >= start) &&
@@ -152,9 +156,9 @@ function renderSelectedOrder(order) {
       <dl class="order-meta detail-meta">
         <div><dt>Data e hora</dt><dd>${formatDateTime(order.issuedAt)}</dd></div>
         <div><dt>Status</dt><dd>${escapeHtml(order.status)}</dd></div>
-        <div><dt>Para</dt><dd>${escapeHtml(order.recipient)}</dd></div>
-        <div><dt>Emitida por</dt><dd>${escapeHtml(order.issuer)}</dd></div>
-        <div><dt>Apartamento / sala</dt><dd>${escapeHtml(order.room)}</dd></div>
+        <div><dt>Quem está sendo notificado</dt><dd>${escapeHtml(order.recipient)}</dd></div>
+        <div><dt>Quem notificou</dt><dd>${escapeHtml(order.issuer)}</dd></div>
+        <div><dt>Apartamento ou local</dt><dd>${escapeHtml(order.room)}</dd></div>
       </dl>
       <section class="description-block detail-description">
         <h3>Descrição</h3>
@@ -245,7 +249,7 @@ async function exportCsv() {
   const orders = await getFilteredOrders();
   if (!orders.length) return;
 
-  const header = ["Protocolo", "Data e hora", "Status", "Para", "Emitida por", "Apartamento/Sala", "Urgência", "Descrição"];
+  const header = ["Protocolo", "Data e hora", "Status", "Quem está sendo notificado", "Quem notificou", "Apartamento ou local", "Grau de impacto", "Descrição"];
   const rows = orders.map((order) => [
     order.protocol,
     formatDateTime(order.issuedAt),

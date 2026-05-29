@@ -193,7 +193,7 @@ function renderRecipientTrend(orders) {
   `).join("");
 
   document.querySelector("#recipientTrendChart").innerHTML = `
-    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Registros por destino ao longo do período">
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Registros por notificado ao longo do período">
       <g class="line-grid">${yGrid}</g>
       <g class="line-axis">${xLabels}</g>
       <g>${lines}</g>
