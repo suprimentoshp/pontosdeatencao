@@ -7,6 +7,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const dataDir = process.env.DATA_DIR || path.join(__dirname, "data");
 const dataFile = path.join(dataDir, "ordens.json");
+const usePostgres = Boolean(process.env.DATABASE_URL);
+let postgresPool = null;
 let dataLock = Promise.resolve();
 
 app.use(express.json({ limit: "25mb" }));
@@ -28,29 +30,95 @@ async function ensureDataFile() {
   }
 }
 
-async function readData() {
+function normalizeData(data) {
+  const orders = Array.isArray(data?.orders) ? data.orders : [];
+  return {
+    orders,
+    nextNumber: Number.isInteger(data?.nextNumber) ? data.nextNumber : getNextNumber(orders)
+  };
+}
+
+function getPostgresPool() {
+  if (!usePostgres) return null;
+  if (!postgresPool) {
+    const { Pool } = require("pg");
+    postgresPool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.PGSSLMODE === "disable" ? false : { rejectUnauthorized: false }
+    });
+  }
+  return postgresPool;
+}
+
+async function ensurePostgresData() {
+  const pool = getPostgresPool();
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS app_data (
+      id text PRIMARY KEY,
+      data jsonb NOT NULL,
+      updated_at timestamptz NOT NULL DEFAULT now()
+    )
+  `);
+
+  const result = await pool.query("SELECT 1 FROM app_data WHERE id = $1", ["ordens"]);
+  if (result.rowCount) return;
+
+  const fileData = await readFileData();
+  await pool.query(
+    "INSERT INTO app_data (id, data) VALUES ($1, $2::jsonb) ON CONFLICT (id) DO NOTHING",
+    ["ordens", JSON.stringify(normalizeData(fileData))]
+  );
+}
+
+async function readFileData() {
   await ensureDataFile();
   const content = await fs.readFile(dataFile, "utf8");
   try {
     const data = JSON.parse(content);
-    return {
-      orders: Array.isArray(data.orders) ? data.orders : [],
-      nextNumber: Number.isInteger(data.nextNumber) ? data.nextNumber : null
-    };
+    return normalizeData(data);
   } catch {
-    return { orders: [], nextNumber: null };
+    return normalizeData({ orders: [] });
   }
 }
 
-async function writeData(data) {
+async function writeFileData(data) {
   await ensureDataFile();
-  const payload = {
-    orders: Array.isArray(data.orders) ? data.orders : [],
-    nextNumber: Number.isInteger(data.nextNumber) ? data.nextNumber : getNextNumber(data.orders || [])
-  };
+  const payload = normalizeData(data);
   const tempFile = `${dataFile}.tmp`;
   await fs.writeFile(tempFile, JSON.stringify(payload, null, 2));
   await fs.rename(tempFile, dataFile);
+}
+
+async function readPostgresData() {
+  await ensurePostgresData();
+  const result = await getPostgresPool().query("SELECT data FROM app_data WHERE id = $1", ["ordens"]);
+  return normalizeData(result.rows[0]?.data);
+}
+
+async function writePostgresData(data) {
+  await ensurePostgresData();
+  await getPostgresPool().query(
+    `
+      INSERT INTO app_data (id, data, updated_at)
+      VALUES ($1, $2::jsonb, now())
+      ON CONFLICT (id)
+      DO UPDATE SET data = EXCLUDED.data, updated_at = now()
+    `,
+    ["ordens", JSON.stringify(normalizeData(data))]
+  );
+}
+
+async function readData() {
+  return usePostgres ? readPostgresData() : readFileData();
+}
+
+async function writeData(data) {
+  if (usePostgres) {
+    await writePostgresData(data);
+    return;
+  }
+
+  await writeFileData(data);
 }
 
 function getHighestProtocolNumber(orders) {
@@ -78,7 +146,21 @@ function publicData(data) {
 }
 
 app.get("/api/app-data", async (request, response) => {
-  response.json(publicData(await readData()));
+  response.json({
+    ...publicData(await readData()),
+    storage: usePostgres ? "postgres" : "file"
+  });
+});
+
+app.get("/api/storage-health", async (request, response) => {
+  const data = await readData();
+  response.json({
+    ok: true,
+    storage: usePostgres ? "postgres" : "file",
+    orders: data.orders.length,
+    nextProtocol: `OS-${getNextNumber(data.orders, data.nextNumber)}`,
+    persistent: usePostgres || Boolean(process.env.DATA_DIR)
+  });
 });
 
 app.put("/api/app-data", async (request, response) => {
