@@ -12,6 +12,24 @@ function localSave(orders) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
 }
 
+function orderTimestamp(order) {
+  return new Date(order.updatedAt || order.issuedAt || 0).getTime() || 0;
+}
+
+function mergeOrders(primaryOrders, secondaryOrders) {
+  const byId = new Map();
+
+  [...secondaryOrders, ...primaryOrders].forEach((order) => {
+    if (!order?.id) return;
+    const existing = byId.get(order.id);
+    if (!existing || orderTimestamp(order) >= orderTimestamp(existing)) {
+      byId.set(order.id, order);
+    }
+  });
+
+  return [...byId.values()].sort((a, b) => orderTimestamp(b) - orderTimestamp(a));
+}
+
 function canUseServerApi() {
   return Boolean(window.APP_CONFIG?.API_URL) && window.location.protocol !== "file:";
 }
@@ -88,10 +106,12 @@ async function listOrders() {
   try {
     const serverOrders = await serverList();
     const localOrders = localList();
+    const mergedOrders = mergeOrders(serverOrders, localOrders);
 
-    if (!serverOrders.length && localOrders.length) {
-      await serverSave(localOrders);
-      return localOrders;
+    if (mergedOrders.length > serverOrders.length) {
+      await serverSave(mergedOrders);
+      localSave(mergedOrders);
+      return mergedOrders;
     }
 
     localSave(serverOrders);
