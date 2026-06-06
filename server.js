@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 const dataDir = process.env.DATA_DIR || path.join(__dirname, "data");
 const dataFile = path.join(dataDir, "ordens.json");
 const usePostgres = Boolean(process.env.DATABASE_URL);
+const isRender = Boolean(process.env.RENDER);
 let postgresPool = null;
 let dataLock = Promise.resolve();
 
@@ -159,7 +160,8 @@ app.get("/api/storage-health", async (request, response) => {
     storage: usePostgres ? "postgres" : "file",
     orders: data.orders.length,
     nextProtocol: `OS-${getNextNumber(data.orders, data.nextNumber)}`,
-    persistent: usePostgres || Boolean(process.env.DATA_DIR)
+    persistent: usePostgres,
+    needsDatabaseUrl: isRender && !usePostgres
   });
 });
 
