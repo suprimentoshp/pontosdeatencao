@@ -10,6 +10,7 @@ const dataFile = path.join(dataDir, "ordens.json");
 const usePostgres = Boolean(process.env.DATABASE_URL);
 const isRender = Boolean(process.env.RENDER);
 let postgresPool = null;
+let postgresError = "";
 let dataLock = Promise.resolve();
 
 app.use(express.json({ limit: "25mb" }));
@@ -110,13 +111,29 @@ async function writePostgresData(data) {
 }
 
 async function readData() {
-  return usePostgres ? readPostgresData() : readFileData();
+  if (!usePostgres) return readFileData();
+
+  try {
+    const data = await readPostgresData();
+    postgresError = "";
+    return data;
+  } catch (error) {
+    postgresError = error.message;
+    console.error("Falha ao ler PostgreSQL. Usando arquivo temporário.", error);
+    return readFileData();
+  }
 }
 
 async function writeData(data) {
   if (usePostgres) {
-    await writePostgresData(data);
-    return;
+    try {
+      await writePostgresData(data);
+      postgresError = "";
+      return;
+    } catch (error) {
+      postgresError = error.message;
+      console.error("Falha ao gravar PostgreSQL. Usando arquivo temporário.", error);
+    }
   }
 
   await writeFileData(data);
@@ -146,26 +163,37 @@ function publicData(data) {
   };
 }
 
-app.get("/api/app-data", async (request, response) => {
-  response.json({
-    ...publicData(await readData()),
-    storage: usePostgres ? "postgres" : "file"
-  });
-});
+function asyncRoute(handler) {
+  return (request, response, next) => {
+    Promise.resolve(handler(request, response, next)).catch(next);
+  };
+}
 
-app.get("/api/storage-health", async (request, response) => {
+app.get("/api/app-data", asyncRoute(async (request, response) => {
+  const data = await readData();
+  response.json({
+    ...publicData(data),
+    storage: usePostgres && !postgresError ? "postgres" : "file",
+    postgresConfigured: usePostgres,
+    postgresError: postgresError || null
+  });
+}));
+
+app.get("/api/storage-health", asyncRoute(async (request, response) => {
   const data = await readData();
   response.json({
     ok: true,
-    storage: usePostgres ? "postgres" : "file",
+    storage: usePostgres && !postgresError ? "postgres" : "file",
     orders: data.orders.length,
     nextProtocol: `OS-${getNextNumber(data.orders, data.nextNumber)}`,
-    persistent: usePostgres,
+    persistent: usePostgres && !postgresError,
+    postgresConfigured: usePostgres,
+    postgresError: postgresError || null,
     needsDatabaseUrl: isRender && !usePostgres
   });
-});
+}));
 
-app.put("/api/app-data", async (request, response) => {
+app.put("/api/app-data", asyncRoute(async (request, response) => {
   const incomingOrders = Array.isArray(request.body?.orders) ? request.body.orders : [];
   const saved = await withDataLock(async () => {
     const current = await readData();
@@ -182,14 +210,14 @@ app.put("/api/app-data", async (request, response) => {
     return mergedOrders;
   });
   response.json({ ok: true, orders: saved });
-});
+}));
 
-app.get("/api/next-protocol", async (request, response) => {
+app.get("/api/next-protocol", asyncRoute(async (request, response) => {
   const data = await readData();
   response.json({ nextProtocol: `OS-${getNextNumber(data.orders, data.nextNumber)}` });
-});
+}));
 
-app.post("/api/orders", async (request, response) => {
+app.post("/api/orders", asyncRoute(async (request, response) => {
   const savedOrder = await withDataLock(async () => {
     const data = await readData();
     const nextNumber = getNextNumber(data.orders, data.nextNumber);
@@ -206,9 +234,9 @@ app.post("/api/orders", async (request, response) => {
   });
 
   response.status(201).json({ ok: true, order: savedOrder });
-});
+}));
 
-app.patch("/api/orders/:id", async (request, response) => {
+app.patch("/api/orders/:id", asyncRoute(async (request, response) => {
   const updated = await withDataLock(async () => {
     const data = await readData();
     let found = null;
@@ -229,9 +257,9 @@ app.patch("/api/orders/:id", async (request, response) => {
   }
 
   response.json({ ok: true, order: updated });
-});
+}));
 
-app.delete("/api/orders/:id", async (request, response) => {
+app.delete("/api/orders/:id", asyncRoute(async (request, response) => {
   const removed = await withDataLock(async () => {
     const data = await readData();
     const orders = data.orders.filter((order) => order.id !== request.params.id);
@@ -246,6 +274,15 @@ app.delete("/api/orders/:id", async (request, response) => {
   }
 
   response.json({ ok: true });
+}));
+
+app.use((error, request, response, next) => {
+  console.error(error);
+  response.status(500).json({
+    ok: false,
+    error: "Falha interna do servidor",
+    detail: error.message
+  });
 });
 
 app.listen(port, () => {
